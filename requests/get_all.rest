@@ -6,5 +6,8 @@ POST http://localhost:3001/api/subjects
 Content-Type: application/json
 
 {
-"name": "Maths"
+    "name": "Англійська мова"
+
 }
+###
+DELETE http://localhost:3001/api/subjects/660e71a0c629c0b7a0e9e216
