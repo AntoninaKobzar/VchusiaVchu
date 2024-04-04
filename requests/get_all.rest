@@ -1,12 +1,14 @@
-GET http://localhost:3001/api/subjects
+GET http://localhost:3001/api/teachers
 
 ###
 
-POST http://localhost:3001/api/subjects
+POST http://localhost:3001/api/teachers
 Content-Type: application/json
 
 {
-    "name": "Англійська мова"
+    "name": "Maxym",
+    "password":"123456",
+    "email":"maxym@gmail.com"
 
 }
 ###

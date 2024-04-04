@@ -3,6 +3,8 @@ const app = express()
 require('dotenv').config()
 
 const Subject=require('./models/subject')
+const Teacher=require('./models/teacher')
+const Student=require('./models/student')
 
 app.use(express.static('dist'))
 
@@ -38,11 +40,25 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
+//get all
+
 app.get('/api/subjects', (request, response) => {
   Subject.find({}).then(subjects=>{
     response.json(subjects)
   })
 })
+app.get('/api/teachers', (request, response) => {
+  Teacher.find({}).then(teachers=>{
+    response.json(teachers)
+  })
+})
+app.get('/api/students', (request, response) => {
+  Student.find({}).then(students=>{
+    response.json(students)
+  })
+})
+
+//post
 
 app.post('/api/subjects', (request, response) => {
   const body = request.body
@@ -61,6 +77,38 @@ subject.save().then(savedSubject=>{
 })
 })
 
+app.post('/api/teachers', (request, response) => {
+  const body = request.body
+
+  if (body.name===undefined) {
+    return response.status(400).json({ 
+      error: 'subject missing' 
+    })
+  }
+
+  const teacher = new Teacher({
+    name:body.name,
+  })
+teacher.save().then(savedTeacher=>{
+  response.json(savedTeacher)
+})
+})
+app.post('/api/students', (request, response) => {
+  const body = request.body
+
+  if (body.name===undefined) {
+    return response.status(400).json({ 
+      error: 'student missing' 
+    })
+  }
+
+  const student = new Student({
+    name:body.name,
+  })
+student.save().then(savedStudent=>{
+  response.json(savedStudent)
+})
+})
 
 let subjects= [
     {
