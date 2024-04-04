@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 require('dotenv').config()
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const Subject=require('./models/subject')
 const Teacher=require('./models/teacher')
