@@ -1,198 +1,209 @@
-const express = require('express')
-const app = express()
-require('dotenv').config()
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const app = require('./app') 
+const config = require('./utils/config')
+const logger = require('./utils/logger')
 
-const Subject=require('./models/subject')
-const Teacher=require('./models/teacher')
-const Student=require('./models/student')
-
-app.use(express.static('dist'))
-
-const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method)
-  console.log('Path:  ', request.path)
-  console.log('Body:  ', request.body)
-  console.log('---')
-  next()
-}
-
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } 
-
-  next(error)
-}
-
-const cors = require('cors')
-
-app.use(cors())
-app.use(express.json())
-app.use(requestLogger)
-
-const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
-
-app.get('/', (request, response) => {
-  response.send('<h1>Hello World!</h1>')
+app.listen(config.PORT, () => {
+  logger.info(`Server running on port ${config.PORT}`)
 })
 
-//get all
 
-app.get('/api/subjects', (request, response) => {
-  Subject.find({}).then(subjects=>{
-    response.json(subjects)
-  })
-})
-app.get('/api/teachers', (request, response) => {
-  Teacher.find({}).then(teachers=>{
-    response.json(teachers)
-  })
-})
-app.get('/api/students', (request, response) => {
-  Student.find({}).then(students=>{
-    response.json(students)
-  })
-})
 
-//post
 
-app.post('/api/subjects', (request, response) => {
-  const body = request.body
+// const express = require('express')
+// const app = express()
+// require('dotenv').config()
+// const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
 
-  if (body.name===undefined) {
-    return response.status(400).json({ 
-      error: 'subject missing' 
-    })
-  }
+// const Subject=require('./models/subject')
+// const Teacher=require('./models/teacher')
+// const Student=require('./models/student')
 
-  const subject = new Subject({
-    name:body.name,
-  })
-subject.save().then(savedSubject=>{
-  response.json(savedSubject)
-})
-})
+// app.use(express.static('dist'))
 
-app.post('/api/teachers', (request, response) => {
-  const body = request.body
+// const requestLogger = (request, response, next) => {
+//   console.log('Method:', request.method)
+//   console.log('Path:  ', request.path)
+//   console.log('Body:  ', request.body)
+//   console.log('---')
+//   next()
+// }
 
-  if (body.name===undefined) {
-    return response.status(400).json({ 
-      error: 'subject missing' 
-    })
-  }
+// const errorHandler = (error, request, response, next) => {
+//   console.error(error.message)
 
-  const teacher = new Teacher({
-    name:body.name,
-  })
-teacher.save().then(savedTeacher=>{
-  response.json(savedTeacher)
-})
-})
-app.post('/api/students', (request, response) => {
-  const body = request.body
+//   if (error.name === 'CastError') {
+//     return response.status(400).send({ error: 'malformatted id' })
+//   } 
 
-  if (body.name===undefined) {
-    return response.status(400).json({ 
-      error: 'student missing' 
-    })
-  }
+//   next(error)
+// }
 
-  const student = new Student({
-    name:body.name,
-  })
-student.save().then(savedStudent=>{
-  response.json(savedStudent)
-})
-})
+// const cors = require('cors')
 
-let subjects= [
-    {
-      "name": "Англійська мова",
-      "id": "1"
-    },
-    {
-      "name": "Математика",
-      "id": "2"
-    },
-    {
-      "name": "Українська мова",
-      "id": "3"
-    },
-    {
-      "name": "Німецька мова",
-      "id": "4"
-    },
-    {
-      "name": "Історія України",
-      "id": "5"
-    },
-    {
-      "name": "Хімія",
-      "id": "6"
-    },
-    {
-      "name": "Біологія",
-      "id":"7"
-    },
-    {
-      "name": "Підготовка до школи",
-      "id": "8"
-    },
-    {
-      "name": "Фізика",
-      "id": "9"
-    }
-  ]
+// app.use(cors())
+// app.use(express.json())
+// app.use(requestLogger)
 
-  app.get('/api/subjects/:id', (request, response,next) => {
-    Subject.findById(request.params.id)
-    .then(subject=>{
-      if(subject){
-      response.json(subject)
-    } else {
-      response.status(404).end()
-    }
-  })
-  .catch(error=>next(error))
-  })
+// const unknownEndpoint = (request, response) => {
+//   response.status(404).send({ error: 'unknown endpoint' })
+// }
+
+// app.get('/', (request, response) => {
+//   response.send('<h1>Hello World!</h1>')
+// })
+
+// //get all
+
+// app.get('/api/subjects', (request, response) => {
+//   Subject.find({}).then(subjects=>{
+//     response.json(subjects)
+//   })
+// })
+// app.get('/api/teachers', (request, response) => {
+//   Teacher.find({}).then(teachers=>{
+//     response.json(teachers)
+//   })
+// })
+// app.get('/api/students', (request, response) => {
+//   Student.find({}).then(students=>{
+//     response.json(students)
+//   })
+// })
+
+// //post
+
+// app.post('/api/subjects', (request, response) => {
+//   const body = request.body
+
+//   if (body.name===undefined) {
+//     return response.status(400).json({ 
+//       error: 'subject missing' 
+//     })
+//   }
+
+//   const subject = new Subject({
+//     name:body.name,
+//   })
+// subject.save().then(savedSubject=>{
+//   response.json(savedSubject)
+// })
+// })
+
+// app.post('/api/teachers', (request, response) => {
+//   const body = request.body
+
+//   if (body.name===undefined) {
+//     return response.status(400).json({ 
+//       error: 'subject missing' 
+//     })
+//   }
+
+//   const teacher = new Teacher({
+//     name:body.name,
+//   })
+// teacher.save().then(savedTeacher=>{
+//   response.json(savedTeacher)
+// })
+// })
+// app.post('/api/students', (request, response) => {
+//   const body = request.body
+
+//   if (body.name===undefined) {
+//     return response.status(400).json({ 
+//       error: 'student missing' 
+//     })
+//   }
+
+//   const student = new Student({
+//     name:body.name,
+//   })
+// student.save().then(savedStudent=>{
+//   response.json(savedStudent)
+// })
+// })
+
+// let subjects= [
+//     {
+//       "name": "Англійська мова",
+//       "id": "1"
+//     },
+//     {
+//       "name": "Математика",
+//       "id": "2"
+//     },
+//     {
+//       "name": "Українська мова",
+//       "id": "3"
+//     },
+//     {
+//       "name": "Німецька мова",
+//       "id": "4"
+//     },
+//     {
+//       "name": "Історія України",
+//       "id": "5"
+//     },
+//     {
+//       "name": "Хімія",
+//       "id": "6"
+//     },
+//     {
+//       "name": "Біологія",
+//       "id":"7"
+//     },
+//     {
+//       "name": "Підготовка до школи",
+//       "id": "8"
+//     },
+//     {
+//       "name": "Фізика",
+//       "id": "9"
+//     }
+//   ]
+
+//   app.get('/api/subjects/:id', (request, response,next) => {
+//     Subject.findById(request.params.id)
+//     .then(subject=>{
+//       if(subject){
+//       response.json(subject)
+//     } else {
+//       response.status(404).end()
+//     }
+//   })
+//   .catch(error=>next(error))
+//   })
   
-  app.delete('/api/subjects/:id', (request, response,next) => {
-    Subject.findByIdAndDelete(request.params.id)
-    .then(result=>{
-      response.status(204).end()
-    })
-    .catch(error=>next(error))
-  })
+//   app.delete('/api/subjects/:id', (request, response,next) => {
+//     Subject.findByIdAndDelete(request.params.id)
+//     .then(result=>{
+//       response.status(204).end()
+//     })
+//     .catch(error=>next(error))
+//   })
 
-  //update
+//   //update
   
-  // app.put('/api/notes/:id', (request, response, next) => {
-  //   const body = request.body
+//   // app.put('/api/notes/:id', (request, response, next) => {
+//   //   const body = request.body
   
-  //   const note = {
-  //     content: body.content,
-  //     important: body.important,
-  //   }
+//   //   const note = {
+//   //     content: body.content,
+//   //     important: body.important,
+//   //   }
   
-  //   Note.findByIdAndUpdate(request.params.id, note, { new: true })
-  //     .then(updatedNote => {
-  //       response.json(updatedNote)
-  //     })
-  //     .catch(error => next(error))
-  // })
+//   //   Note.findByIdAndUpdate(request.params.id, note, { new: true })
+//   //     .then(updatedNote => {
+//   //       response.json(updatedNote)
+//   //     })
+//   //     .catch(error => next(error))
+//   // })
   
-app.use(unknownEndpoint)
+// app.use(unknownEndpoint)
 
-app.use(errorHandler)
+// app.use(errorHandler)
 
-const PORT = process.env.PORT
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+// const PORT = process.env.PORT
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`)
+// })

@@ -1,23 +1,15 @@
 const mongoose=require('mongoose')
 
-mongoose.set('strictQuery',false)
-
-const url = process.env.MONGODB_URI
-
-console.log('connecting to', url)
-mongoose.connect(url)
-.then(result => {
-    console.log('connected to MongoDB')
-  })
-  .catch(error => {
-    console.log('error connecting to MongoDB:', error.message)
-  })
-
   const studentSchema = new mongoose.Schema({
+    username: {
+      type: String,
+      required: true,
+      unique: true
+    },
     photo: String, 
     name: String,
     email: String,
-    password: String,
+    passwordHash: String,
     role: String,
   });
 
@@ -26,8 +18,9 @@ studentSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
+    delete returnedObject.passwordHash
   }
 })
 
-
-module.exports = mongoose.model('Student', studentSchema)
+const Student=mongoose.model('Student', studentSchema)
+module.exports = Student

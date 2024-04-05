@@ -1,23 +1,16 @@
 const mongoose=require('mongoose')
 
-mongoose.set('strictQuery',false)
-
-const url = process.env.MONGODB_URI
-
-console.log('connecting to', url)
-mongoose.connect(url)
-.then(result => {
-    console.log('connected to MongoDB')
-  })
-  .catch(error => {
-    console.log('error connecting to MongoDB:', error.message)
-  })
 
   const teacherSchema = new mongoose.Schema({
+    username: {
+      type: String,
+      required: true,
+      unique: true
+    },
     photo: String, 
     name: String,
     email: String,
-    password: String,
+    passwordHash: String,
     role: String,
     info: {
       subjects: [String], 
@@ -27,7 +20,7 @@ mongoose.connect(url)
       price: String,
       online: Boolean,
       offline: Boolean
-    }
+    },
   });
 
 teacherSchema.set('toJSON', {
@@ -35,9 +28,11 @@ teacherSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
+    delete returnedObject.passwordHash
   }
 })
 
+const Teacher=mongoose.model('Teacher', teacherSchema)
 
-module.exports = mongoose.model('Teacher', teacherSchema)
+module.exports =Teacher 
 

@@ -13,18 +13,28 @@ mongoose.connect(url)
     });
 
     const studentSchema = new mongoose.Schema({
+      username: {
+        type: String,
+        required: true,
+        unique: true
+      },
       photo: String,
       name: String,
       email: String,
-      password: String,
+      passwordHash: String,
       role: String,
     });
 
     const teacherSchema = new mongoose.Schema({
+      username: {
+        type: String,
+        required: true,
+        unique: true
+      },
       photo: String,
       name: String,
       email: String,
-      password: String,
+      passwordHash: String,
       role: String,
       info: {
         subjects: [String],
@@ -36,39 +46,46 @@ mongoose.connect(url)
         offline: Boolean,
       },
     });
+    const userSchema = mongoose.Schema({
+      username: {
+        type: String,
+        required: true,
+        unique: true
+      },
+      name: String,
+      passwordHash: String,
+     role:String,
+    })
 
     const Subject = mongoose.model('Subject', subjectSchema);
     const Teacher = mongoose.model('Teacher', teacherSchema);
     const Student = mongoose.model('Student', studentSchema);
+    const User=mongoose.model('User',userSchema)
 
-    // Sample data
-    const subject = new Subject({ name: 'Math' });
-    const student = new Student({
-       name: 'John Doe',
-        email: 'john@example.com',
-         password: 'password123',
-          role: 'student' 
-        });
-    const teacher = new Teacher({ 
-      name: 'Jane Smith', 
-      email: 'jane@example.com',
-       password: 'password456', 
-       role: 'teacher'
-       });
-
-    // Saving sample data
-    return Promise.all([
-      subject.save(),
-      teacher.save(),
-      student.save(),
-    ]);
+  Subject.find({}).then(result => {
+    result.forEach(subject => {
+      console.log(subject)
+    })
+    mongoose.connection.close()
   })
-  .then(() => {
-    console.log('Data saved successfully');
-    mongoose.connection.close();
+  Student.find({}).then(result => {
+    result.forEach(student => {
+      console.log(student)
+    })
+    mongoose.connection.close()
   })
-  .catch((error) => {
-    console.error('Error:', error);
-    mongoose.connection.close();
-  });
+  
+  Teacher.find({}).then(result => {
+    result.forEach(teacher => {
+      console.log(teacher)
+    })
+    mongoose.connection.close()
+  })
+  User.find({}).then(result => {
+    result.forEach(user => {
+      console.log(user)
+    })
+    mongoose.connection.close()
+  })
+})
 
