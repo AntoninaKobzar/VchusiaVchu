@@ -1,96 +1,93 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const url = process.env.MONGODB_URI;
-
 
 console.log('connecting to', url);
 
 mongoose.set('strictQuery', false);
 mongoose.connect(url)
   .then(() => {
+    console.log('Connected to MongoDB');
+
+    const userSchema = new mongoose.Schema({
+      email: {
+        type: String,
+        required: true,
+        unique: true
+      },
+      passwordHash: {
+        type: String,
+        required: true
+      },
+      role: {
+        type: String,
+        enum: ['student', 'teacher'],
+        required: true
+      }
+    });
     const subjectSchema = new mongoose.Schema({
       name: String,
     });
+    // Hash password before saving
+    userSchema.pre('save', async function(next) {
+      const user = this;
+      if (!user.isModified('passwordHash')) return next();
 
-    const studentSchema = new mongoose.Schema({
-      username: {
-        type: String,
-        required: true,
-        unique: true
-      },
-      photo: String,
-      email: {
-        type:String,
-        required:true,
-        unique:true
-      },
-      passwordHash: String,
-      role: String,
+      const saltRounds = 10;
+      user.passwordHash = await bcrypt.hash(user.passwordHash, saltRounds);
+      next();
     });
-
-    const teacherSchema = new mongoose.Schema({
-      username: {
-        type: String,
-        required: true,
-        unique: true
-      },
-      photo: String,
-      email: {
-        type:String,
-        required:true,
-        unique:true
-      },
-      passwordHash: String,
-      role: String,
-      info: {
-        subjects: [String],
-        education: String,
-        experience: String,
-        text: String,
-        price: String,
-        online: Boolean,
-        offline: Boolean,
+    subjectSchema.set('toJSON', {
+      transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString();
+        delete returnedObject._id;
+        delete returnedObject.__v;
       },
     });
-    // const userSchema = mongoose.Schema({
-    //   username: {
-    //     type: String,
-    //     required: true,
-    //     unique: true
-    //   },
-    //   passwordHash: String,
-    //  role:String,
-    // })
+    const User = mongoose.model('User', userSchema);
 
-    const Subject = mongoose.model('Subject', subjectSchema);
-    const Teacher = mongoose.model('Teacher', teacherSchema);
-    const Student = mongoose.model('Student', studentSchema);
-    // const User=mongoose.model('User',userSchema)
+    // Example of registering a new user (student or teacher)
+    const registerUser = async (email, password, role) => {
+      try {
+        const user = new User({ email, passwordHash: password, role });
+        await user.save();
+        console.log(`User registered successfully with email: ${email}`);
+      } catch (error) {
+        console.error('Error registering user:', error.message);
+      }
+    };
 
-  Subject.find({}).then(result => {
-    result.forEach(subject => {
-      console.log(subject)
-    })
-    mongoose.connection.close()
-  })
-  Student.find({}).then(result => {
-    result.forEach(student => {
-      console.log(student)
-    })
-    mongoose.connection.close()
-  })
-  
-  Teacher.find({}).then(result => {
-    result.forEach(teacher => {
-      console.log(teacher)
-    })
-    mongoose.connection.close()
-  })
-  // User.find({}).then(result => {
-  //   result.forEach(user => {
-  //     console.log(user)
-  //   })
-  //   mongoose.connection.close()
-  // })
-})
+    // Example of logging in
+    const loginUser = async (email, password) => {
+      try {
+        const user = await User.findOne({ email });
+        if (!user) {
+          console.error('User not found');
+          return;
+        }
 
+        const passwordMatch = await bcrypt.compare(password, user.passwordHash);
+        if (!passwordMatch) {
+          console.error('Incorrect password');
+          return;
+        }
+
+        console.log('Login successful');
+        // Generate JWT token or perform other authentication tasks
+      } catch (error) {
+        console.error('Error logging in:', error.message);
+      }
+    };
+
+    // Example usage:
+    registerUser('student@example.com', 'studentpassword', 'student');
+    registerUser('teacher@example.com', 'teacherpassword', 'teacher');
+
+    loginUser('student@example.com', 'studentpassword');
+    loginUser('teacher@example.com', 'teacherpassword');
+  })
+  .catch((error) => {
+    console.error('Error connecting to MongoDB:', error.message);
+  });
+  module.exports = mongoose.model('Subject', subjectSchema);

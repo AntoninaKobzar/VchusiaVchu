@@ -2,13 +2,13 @@ GET http://localhost:3001/api/teachers
 
 ###
 
-POST http://localhost:3001/api/students
+POST http://localhost:3001/api/auth/register
 Content-Type: application/json
 
 {
-    "username": "Ned",
+    "email":"rob@gmail.com",
     "password":"111111",
-    "role":"student",
+    "role":"student"
 }
 ###
 DELETE http://localhost:3001/api/subjects/660e71a0c629c0b7a0e9e216
