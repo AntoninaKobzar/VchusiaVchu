@@ -11,6 +11,11 @@ mongoose.connect(url)
     console.log('Connected to MongoDB');
 
     const userSchema = new mongoose.Schema({
+      username: {
+        type: String,
+        required: true,
+        unique: true 
+      },
       email: {
         type: String,
         required: true,
@@ -48,9 +53,9 @@ mongoose.connect(url)
     const User = mongoose.model('User', userSchema);
 
     // Example of registering a new user (student or teacher)
-    const registerUser = async (email, password, role) => {
+    const registerUser = async (username,email, password, role) => {
       try {
-        const user = new User({ email, passwordHash: password, role });
+        const user = new User({ username,email, passwordHash: password, role });
         await user.save();
         console.log(`User registered successfully with email: ${email}`);
       } catch (error) {
