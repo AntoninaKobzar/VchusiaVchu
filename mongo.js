@@ -86,8 +86,8 @@ mongoose.connect(url)
     };
 
     // Example usage:
-    registerUser('student@example.com', 'studentpassword', 'student');
-    registerUser('teacher@example.com', 'teacherpassword', 'teacher');
+    registerUser('username','student@example.com', 'studentpassword', 'student');
+    registerUser('username','teacher@example.com', 'teacherpassword', 'teacher');
 
     loginUser('student@example.com', 'studentpassword');
     loginUser('teacher@example.com', 'teacherpassword');
