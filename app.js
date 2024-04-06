@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 
 app.use('/api/auth', authRoutes);
-app.use('./api/subjects',subjectsRoutes)
+app.use('/api',subjectsRoutes)
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
