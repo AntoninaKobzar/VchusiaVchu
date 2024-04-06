@@ -2,13 +2,13 @@ GET http://localhost:3001/api/teachers
 
 ###
 
-POST http://localhost:3001/api/login
+POST http://localhost:3001/api/students
 Content-Type: application/json
 
 {
-    "name": "Dim",
-    "password":"123456",
-"role":"teacher",
+    "username": "Ned",
+    "password":"111111",
+    "role":"student",
 }
 ###
 DELETE http://localhost:3001/api/subjects/660e71a0c629c0b7a0e9e216

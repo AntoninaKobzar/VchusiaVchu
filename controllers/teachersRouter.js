@@ -3,14 +3,13 @@ const teachersRouter = require('express').Router()
 const Teacher = require('../models/teacher')
 
 teachersRouter.post('/', async (request, response) => {
-  const { username,name, password } = request.body
+  const { username, password } = request.body
 
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
   const teacher = new Teacher({
     username,
-    name,
     passwordHash,
   })
 

@@ -19,8 +19,11 @@ mongoose.connect(url)
         unique: true
       },
       photo: String,
-      name: String,
-      email: String,
+      email: {
+        type:String,
+        required:true,
+        unique:true
+      },
       passwordHash: String,
       role: String,
     });
@@ -32,8 +35,11 @@ mongoose.connect(url)
         unique: true
       },
       photo: String,
-      name: String,
-      email: String,
+      email: {
+        type:String,
+        required:true,
+        unique:true
+      },
       passwordHash: String,
       role: String,
       info: {
@@ -46,21 +52,20 @@ mongoose.connect(url)
         offline: Boolean,
       },
     });
-    const userSchema = mongoose.Schema({
-      username: {
-        type: String,
-        required: true,
-        unique: true
-      },
-      name: String,
-      passwordHash: String,
-     role:String,
-    })
+    // const userSchema = mongoose.Schema({
+    //   username: {
+    //     type: String,
+    //     required: true,
+    //     unique: true
+    //   },
+    //   passwordHash: String,
+    //  role:String,
+    // })
 
     const Subject = mongoose.model('Subject', subjectSchema);
     const Teacher = mongoose.model('Teacher', teacherSchema);
     const Student = mongoose.model('Student', studentSchema);
-    const User=mongoose.model('User',userSchema)
+    // const User=mongoose.model('User',userSchema)
 
   Subject.find({}).then(result => {
     result.forEach(subject => {
@@ -81,11 +86,11 @@ mongoose.connect(url)
     })
     mongoose.connection.close()
   })
-  User.find({}).then(result => {
-    result.forEach(user => {
-      console.log(user)
-    })
-    mongoose.connection.close()
-  })
+  // User.find({}).then(result => {
+  //   result.forEach(user => {
+  //     console.log(user)
+  //   })
+  //   mongoose.connection.close()
+  // })
 })
 

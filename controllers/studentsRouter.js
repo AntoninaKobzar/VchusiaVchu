@@ -3,15 +3,15 @@ const studentsRouter = require('express').Router()
 const Student = require('../models/student')
 
 studentsRouter.post('/', async (request, response) => {
-  const { username,name, password} = request.body
+  const { username, password,role} = request.body
 
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
   const student = new Student({
     username,
-    name,
     passwordHash,
+    role
   })
 
   const savedStudent = await student.save()

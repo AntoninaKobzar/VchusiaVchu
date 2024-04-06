@@ -7,8 +7,11 @@ const mongoose=require('mongoose')
       unique: true
     },
     photo: String, 
-    name: String,
-    email: String,
+    email: {
+      type:String,
+      required:true,
+      unique:true
+    },
     passwordHash: String,
     role: String,
   });
