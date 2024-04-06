@@ -51,6 +51,7 @@ mongoose.connect(url)
       },
     });
     const User = mongoose.model('User', userSchema);
+    // const Subject=mongoose.model('Subject',subjectSchema);
 
     // Example of registering a new user (student or teacher)
     const registerUser = async (username,email, password, role) => {

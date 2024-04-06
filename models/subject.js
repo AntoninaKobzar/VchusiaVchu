@@ -12,6 +12,6 @@ subjectSchema.set('toJSON', {
     delete returnedObject.__v
   }
 })
+const Subject=mongoose.model('Subject',subjectSchema)
 
-
-module.exports = mongoose.model('Subject', subjectSchema)
+module.exports = Subject

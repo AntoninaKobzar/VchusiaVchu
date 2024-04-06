@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const config = require('./utils/config');
 const authRoutes = require('./routes/authRoutes');
+const subjectsRoutes=require('./routes/subjectsRoutes');
 const middleware = require('./utils/middleware');
 const logger = require('./utils/logger');
 
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 
 app.use('/api/auth', authRoutes);
+app.use('./api/subjects',subjectsRoutes)
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
