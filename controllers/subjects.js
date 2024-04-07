@@ -42,7 +42,16 @@ exports.add = async (req, res) => {
 };
 
 function generateUniqueId() {
-  const timestamp = new Date().getTime(); // Get current timestamp
-  const random = Math.floor(Math.random() * 1000000); // Generate random number
-  return timestamp.toString(36) + random.toString(36); // Combine timestamp and random number
+  const timestamp = new Date().getTime(); 
+  const random = Math.floor(Math.random() * 1000000);
+  return timestamp.toString(36) + random.toString(36);
 }
+
+exports.getAll = async (req, res) => {
+  try {
+    const subjects = await Subject.find();
+    res.json(subjects);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

@@ -1,4 +1,4 @@
-GET http://localhost:3001/api/teachers
+GET http://localhost:3001/api/subjects
 
 ###
 
