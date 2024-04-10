@@ -40,3 +40,19 @@ exports.login = async (req, res) => {
   const token = jwt.sign({ email: user.email, role: user.role }, 'secret_key');
   res.json({ token });
 };
+
+exports.getById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user by ID:', error);
+    res.status(500).json({ error: 'An error occurred while fetching user by ID' });
+  }
+};
