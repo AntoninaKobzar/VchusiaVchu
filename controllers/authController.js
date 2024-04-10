@@ -4,18 +4,20 @@ const jwt = require('jsonwebtoken');
 // Register a new user
 exports.registerUser = async (req, res) => {
   try {
-    const { username, email, password, role, info } = req.body;
+    const { username, email, password, role} = req.body;
 
     // Retrieve the filename and path of the uploaded file from req.file
-    const photo = req.file ? req.file.path : '';
-
+    // let photo = req.file ? req.file.path : '';
+    let photo = '';
+    if (req.file) {
+      photo = '/uploads/' + req.file.filename;
+    }
     const newUser = new User({
       username,
       email,
       password,
       role,
-      photo,
-      info
+      photo
     });
 
     await newUser.save();

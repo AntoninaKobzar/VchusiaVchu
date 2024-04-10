@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Register route with file upload middleware
-router.post('/register', upload.single('photo'), authController.registerUser);
+router.post('/users', upload.single('photo'), authController.registerUser);
 router.post('/login', authController.login);
 
 module.exports = router;
