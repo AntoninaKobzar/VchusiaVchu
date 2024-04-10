@@ -1,23 +1,33 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 
 // Register a new user
 exports.register = async (req, res) => {
   try {
     const { username, email, password, role} = req.body;
-
-    // Retrieve the filename and path of the uploaded file from req.file
-    // let photo = req.file ? req.file.path : '';
-    let photo = '';
-    if (req.file) {
-      photo = '/uploads/' + req.file.filename;
+    if (!username || !email || !password || !role) {
+      return res.status(400).json({ error: 'Please fill out all required fields.' });
     }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this email already exists.' });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    //Retrieve the filename and path of the uploaded file from req.file
+    // let photo = req.file ? req.file.path : '';
+    // let photo = '';
+    // if (req.file) {
+    //   photo = '/uploads/' + req.file.filename;
+    // }
     const newUser = new User({
       username,
       email,
-      password,
+      password: hashedPassword,
       role,
-      photo
+      photo: req.file ? '/uploads/' + req.file.filename : ''
     });
 
     await newUser.save();
@@ -30,15 +40,30 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  const { email, password} = req.body;
 
-  if (!user || user.password !== password) {
-    return res.status(401).json({ message: 'Invalid credentials' });
+  try {
+    const user = await User.findOne({ email });
+    console.log(user);
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    // Generate JWT token
+    const token = jwt.sign({ email: user.email, role: user.role }, 'secret_key', { expiresIn: '1h' });
+
+    // Send token in response
+    res.json({ token });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-
-  const token = jwt.sign({ email: user.email, role: user.role }, 'secret_key');
-  res.json({ token });
 };
 
 exports.getById = async (req, res) => {
@@ -56,3 +81,4 @@ exports.getById = async (req, res) => {
     res.status(500).json({ error: 'An error occurred while fetching user by ID' });
   }
 };
+
