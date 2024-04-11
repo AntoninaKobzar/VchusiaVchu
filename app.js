@@ -1,6 +1,10 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+
+// const path = require('path');
 
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -29,8 +33,8 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(middleware.requestLogger);
 
-const multer = require('multer');
-const path = require('path');
+
+app.use(upload.single('photo'));
 
 
 
@@ -43,7 +47,7 @@ mongoose.connect(config.MONGODB_URI)
   });
 
 
-app.use('/api/auth', authRoutes);
+app.use('/api/users', authRoutes);
 app.use('/api/subjects', subjectsRoutes);
 
 app.use(middleware.unknownEndpoint);

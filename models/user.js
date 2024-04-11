@@ -6,17 +6,22 @@ const userSchema = new mongoose.Schema({
   passwordHash: { type: String, required: true },
   role: { type: String, enum: ['student', 'teacher'], required: true },
   photo: String,
-  info: {
-    subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subject' }], // Assuming Subject is another Mongoose model
-    education: String,
-    experience: String,
-    text: String,
-    price: String,
-    online: Boolean,
-    offline: Boolean
-  }
+  subjects: [String],
+  education: String,
+  experience: String,
+  text: String,
+  price: String,
+  online: Boolean,
+  offline: Boolean
 });
 
+// userSchema.set('toJSON', {
+//   transform: (document, returnedObject) => {
+//     returnedObject.id = returnedObject._id.toString()
+//     delete returnedObject._id
+//     delete returnedObject.__v
+//   }
+// })
 
 const User = mongoose.model('User', userSchema);
 
