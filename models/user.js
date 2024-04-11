@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-  },
+  username: String,
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  passwordHash: { type: String, required: true },
   role: { type: String, enum: ['student', 'teacher'], required: true },
-  photo: { type: String, required: false, unique: false },
+  photo: String,
   info: {
     subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subject' }], // Assuming Subject is another Mongoose model
     education: String,
