@@ -112,7 +112,7 @@ exports.login = async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.json( {token, user} );
+    res.json( {token,user} );
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Internal server error' });
