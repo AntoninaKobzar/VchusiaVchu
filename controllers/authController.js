@@ -4,67 +4,30 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
 
-// Define storage for uploaded photos
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/') // Upload directory
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname)) // Unique filename
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname)) 
   }
 });
 
-// Initialize multer upload
 const upload = multer({ storage: storage });
 
-// exports.register = async (req, res) => {
-//   try {
-//     const { username, email, password, role,subjects,education,
-//       experience,
-//       text,
-//       price,
-//       online,
-//       offline,photo} = req.body;
-//     const passwordHash = await bcrypt.hash(password, 10);
 
-//     // Save user data to database, including photoUrl
-//     const newUser = new User({
-//       username,
-//       email,
-//       passwordHash,
-//       role,
-//       info: {
-//         education,
-//         experience,
-//         text,
-//         price,
-//         online,
-//         offline, // Copy other info fields from request body
-//         subjects, // Save selected subjects to the info object
-//       },
-//       photo: req.file ? '/uploads/' + req.file.filename : '' // Store photo URL as string
-//     });
-
-//     await newUser.save();
-
-//     res.status(201).json({ message: 'User registered successfully' });
-//   } catch (error) {
-//     console.error('Error registering user:', error);
-//     res.status(500).json({ error: 'An error occurred while registering user' });
-//   }
-// };
 exports.register = async (req, res) => {
   try {
     const { username, email, password, role, subjects, education, experience, text, price, online, offline } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     
-    let photoUrl = ''; // Initialize photoUrl
+    let photoUrl = '';
 
     if (req.file) {
-      photoUrl = '/uploads/' + req.file.filename; // Construct photo URL if file is uploaded
+      photoUrl = '/uploads/' + req.file.filename; 
     }
 
-    // Save user data to database, including photoUrl
     const newUser = new User({
       username,
       email,
@@ -118,32 +81,7 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-// exports.login = async (req, res) => {
-//   const { email, password} = req.body;
 
-//   try {
-//     const user = await User.findOne({ email });
-//     console.log(user);
-
-//     if (!user) {
-//       return res.status(401).json({ message: 'Invalid credentials' });
-//     }
-
-//     const passwordMatch = await bcrypt.compare(password, user.passwordHash);
-
-//     if (!passwordMatch) {
-//       return res.status(401).json({ message: 'Invalid credentials' });
-//     }
-//     // Generate JWT token
-//     const token = jwt.sign({ email: user.email, role: user.role }, 'secret_key', { expiresIn: '1h' });
-
-//     // Send token in response
-//     res.json({ token });
-//   } catch (error) {
-//     console.error('Login error:', error);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// };
 
 exports.getAll = async (req, res) => {
   try {
@@ -171,9 +109,9 @@ exports.getById = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  // Implement updating user logic here
+ 
 };
 
 exports.delete = async (req, res) => {
-  // Implement deleting user logic here
+ 
 };

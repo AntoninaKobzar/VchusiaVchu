@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 
-// const path = require('path');
 
 const cors = require('cors');
 const mongoose = require('mongoose');
